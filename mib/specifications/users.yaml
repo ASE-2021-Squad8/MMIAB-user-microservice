@@ -12,7 +12,7 @@ paths:
     post:
       tags: [Users]
       summary: Add a new user
-      operationId: create_user
+      operationId: mib.resources.users.create_user
       requestBody:
         description: Create a new user inside microservice app
         required: true
@@ -123,7 +123,7 @@ paths:
       tags: [ Users ]
       summary: Modify user data
       description: Change the account data of a user
-      operationId: change_data_user
+      operationId: mib.resources.users.change_data_user
       parameters:
         - name: user_id
           description: User Unique ID
@@ -173,7 +173,7 @@ paths:
       tags: [ Users ]
       summary: Change user password
       description: Change the password of a user
-      operationId: change_pass_user
+      operationId: mib.resources.users.change_pass_user
       parameters:
         - name: user_id
           description: User Unique ID
@@ -219,7 +219,7 @@ paths:
       tags: [ Users ]
       summary: Report a user
       description: Report a user by its email
-      operationId: report
+      operationId: mib.resources.users.report
       requestBody:
         required: true
         content:
@@ -245,7 +245,7 @@ paths:
       tags: [ Users ]
       summary: Set content filter for user
       description: Change the content filter of a user
-      operationId: content_filter
+      operationId: mib.resources.users.set_content_filter
       parameters:
         - name: user_id
           description: User Unique ID
@@ -279,7 +279,7 @@ paths:
       tags: [ Users ]
       summary: Change number of points for user
       description: Change number of points for user
-      operationId: add_points
+      operationId: mib.resources.users.add_points
       parameters:
         - name: user_id
           description: User Unique ID
@@ -310,10 +310,10 @@ paths:
 
   /user/black_list/{user_id}:
     get:
-      tags: [ User Query ]
+      tags: [ Query ]
       summary: Get the blacklist for a user
       description: Get the blacklist for a user
-      operationId: get_black_list
+      operationId: mib.resources.users.get_black_list
       parameters:
         - name: user_id
           description: User Unique ID
@@ -362,7 +362,7 @@ paths:
       tags: [ Users ]
       summary: Put/delete users in/from blacklist
       description: Put/delete users in/from the blacklist of user_id
-      operationId: modify_black_list
+      operationId: mib.resources.users.modify_black_list
       parameters:
         - name: user_id
           description: User Unique ID
@@ -431,10 +431,10 @@ paths:
 
   /user/{user_id}:
     get:
-      tags: [ User Query ]
+      tags: [ Query ]
       summary: Get a user by its id
       description: Get a user by its id
-      operationId: get_user
+      operationId: mib.resources.query.get_user
       parameters:
         - name: user_id
           description: User Unique ID
@@ -458,7 +458,7 @@ paths:
       tags: [ Users ]
       summary: Unregister a user
       description: Unregister a user by its id (set is_active to false)
-      operationId: unregister
+      operationId: mib.resources.users.unregister
       parameters:
         - name: user_id
           in: path
@@ -476,10 +476,10 @@ paths:
 
   /user/{user_id}/public:
     get:
-      tags: [ User Query ]
+      tags: [ Query ]
       summary: Get a user's public details
       description: Get a user's public details by its id
-      operationId: get_user_details
+      operationId: mib.resources.query.get_user_details
       parameters:
         - name: user_id
           description: User Unique ID
@@ -502,10 +502,10 @@ paths:
 
   /user/{user_id}/email:
     get:
-      tags: [ User Query ]
+      tags: [ Query ]
       summary: Get email of user
       description: Get the email of a user by its id
-      operationId: get_user_email
+      operationId: mib.resources.query.get_user_email
       parameters:
         - name: user_id
           description: User Unique ID
@@ -533,10 +533,10 @@ paths:
   
   /user/{user_id}/recipients:
     get:
-      tags: [ User Query ]
+      tags: [ Query ]
       summary: Get the recipients for a user
       description: Get all the possible recipients for a user_id
-      operationId: get_recipients
+      operationId: mib.resources.query.get_recipients
       parameters:
         - name: user_id
           in: path
@@ -567,10 +567,10 @@ paths:
 
   /user_email/{user_email}:
     get:
-      tags: [ User Query ]
+      tags: [ Query ]
       summary: Get user by email
       description: Get a user by its email
-      operationId: get_user_by_email
+      operationId: mib.resources.query.get_user_by_email
       parameters:
         - name: user_email
           description: User unique email
@@ -592,10 +592,10 @@ paths:
 
   /user/list/:
     get:
-      tags: [ User Query ]
+      tags: [ Query ]
       summary: Get users list
       description: Get all the users
-      operationId: get_all_users
+      operationId: mib.resources.query.get_all_users
       responses:
         200:
           description: Return users list
@@ -610,10 +610,10 @@ paths:
 
   /user/list/public:
     get:
-      tags: [ User Query ]
+      tags: [ Query ]
       summary: Get public users list
       description: Get all the users public details
-      operationId: get_users_list_json
+      operationId: mib.resources.query.get_users_list_json
       responses:
         200:
           description: Return users list
@@ -628,10 +628,10 @@ paths:
           
   /user/list/banned:
     get:
-      tags: [ User Query ]
+      tags: [ Query ]
       summary: Get banned users list
       description: Get all the banned users
-      operationId: get_banned_users
+      operationId: mib.resources.query.get_banned_users
       responses:
         200:
           description: Return banned users list
@@ -646,10 +646,10 @@ paths:
 
   /user/list/unregistered:
     get:
-      tags: [ User Query ]
+      tags: [ Query ]
       summary: Get unregistered users list
       description: Get all the unregistered users (inactive but not banned)
-      operationId: get_unregistered_users
+      operationId: mib.resources.query.get_unregistered_users
       responses:
         200:
           description: Return unregistered users list

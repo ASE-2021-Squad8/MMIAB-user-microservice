@@ -5,8 +5,8 @@ University of Pisa.
 
 ## Team info
 
-- The *squad id* is **<SQUAD_ID>**
-- The *team leader* is *<TEAM_LEADER>*
+- The *squad id* is **<8>**
+- The *team leader* is *<Carlo Leo>*
 
 #### Members
 

@@ -42,7 +42,7 @@ paths:
                   format: email
                 dateofbirth:
                   type: string
-                  description: User birthdate
+                  description: User dateofbirth
                   example: '2020-01-01'
                   format: datetime
                 password:
@@ -479,7 +479,7 @@ paths:
       tags: [ Query ]
       summary: Get a user's public details
       description: Get a user's public details by its id
-      operationId: mib.resources.query.get_user_details
+      operationId: mib.resources.query.get_user_public
       parameters:
         - name: user_id
           description: User Unique ID
@@ -613,7 +613,7 @@ paths:
       tags: [ Query ]
       summary: Get public users list
       description: Get all the users public details
-      operationId: mib.resources.query.get_users_list_json
+      operationId: mib.resources.query.get_all_users_public
       responses:
         200:
           description: Return users list
@@ -695,7 +695,7 @@ components:
           format: email
         dateofbirth:
           type: string
-          description: User birthdate
+          description: User dateofbirth
           example: '2020-01-01'
           format: datetime
         password:

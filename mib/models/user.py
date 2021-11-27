@@ -1,27 +1,30 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from sqlalchemy.sql.schema import ForeignKey
+from dataclasses import dataclass
 from mib import db
 
 
+@dataclass
 class User(db.Model):
     """Representation of User model."""
 
     # The name of the table that we explicitly set
-    __tablename__ = 'User'
+    __tablename__ = "User"
 
     # A list of fields to be serialized
-    SERIALIZE_LIST = ['id', 'email', 'is_active', 'authenticated', 'is_anonymous']
+    SERIALIZE_LIST = ["id", "email", "is_active", "authenticated", "is_anonymous"]
 
     # All fields of user
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.Unicode(128), nullable=False, unique=True)
-    first_name = db.Column(db.Unicode(128), nullable=False, unique=False)
-    last_name = db.Column(db.Unicode(128), nullable=False, unique=False)
+    firstname = db.Column(db.Unicode(128), nullable=False, unique=False)
+    lastname = db.Column(db.Unicode(128), nullable=False, unique=False)
     password = db.Column(db.Unicode(128))
-    birthdate = db.Column(db.Date())
-    phone = db.Column(db.Unicode(128), nullable=False, unique=True)
+    dateofbirth = db.Column(db.Date())
+    reports = db.Column(db.Integer, default=0)
     is_active = db.Column(db.Boolean, default=True)
-    is_admin = db.Column(db.Boolean, default=False)
+    points = db.Column(db.Integer, default=0)
+    content_filter = db.Column(db.Boolean, default=False)
     authenticated = db.Column(db.Boolean, default=True)
     is_anonymous = False
 
@@ -35,20 +38,17 @@ class User(db.Model):
     def set_email(self, email):
         self.email = email
 
-    def set_first_name(self, name):
-        self.first_name = name
+    def set_firstname(self, name):
+        self.firstname = name
 
-    def set_last_name(self, name):
-        self.last_name = name
+    def set_lastname(self, name):
+        self.lastname = name
 
     def is_authenticated(self):
         return self.authenticated
 
-    def set_birthday(self, birthdate):
-        self.birthdate = birthdate
-
-    def set_phone(self, phone):
-        self.phone = phone
+    def set_dateofbirth(self, dateofbirth):
+        self.dateofbirth = dateofbirth
 
     def authenticate(self, password):
         checked = check_password_hash(self.password, password)
@@ -57,3 +57,17 @@ class User(db.Model):
 
     def serialize(self):
         return dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
+
+
+@dataclass
+class BlackList(db.Model):
+    """A user's blacklist"""
+
+    __tablename__ = "blacklist"
+
+    owner: int
+    member: int
+
+    # one blacklist per user
+    owner = db.Column(db.Integer, ForeignKey(User.id), primary_key=True)
+    member = db.Column(db.Integer, ForeignKey(User.id), primary_key=True)

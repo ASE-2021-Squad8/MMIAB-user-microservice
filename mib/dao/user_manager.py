@@ -1,6 +1,5 @@
 from mib.dao.manager import Manager
-from mib.models.user import User
-from mib.models.user import BlackList
+from mib.models.user import User, BlackList
 
 
 class UserManager(Manager):
@@ -37,32 +36,38 @@ class UserManager(Manager):
 
     @staticmethod
     def add_points(user: User, points_: int):
+        Manager.check_none(user=user, points_=points_)
         setattr(user, "points", user.points + points_)
         Manager.commit()
 
     @staticmethod
     def add_to_blacklist(owner_id: int, members_list):
+        Manager.check_none(owner_id=owner_id, members_list=members_list)
         for member_id in members_list:
             entry = BlackList(owner=owner_id, member=member_id)
             Manager.add_to_blacklist(entry)
 
     @staticmethod
     def delete_from_blacklist(owner_id: int, members_list):
+        Manager.check_none(owner_id=owner_id, members_list=members_list)
         for member_id in members_list:
             Manager.delete_member_from_blacklist(owner_id, member_id)
 
     @staticmethod
     def get_blacklist_candidates(owner_id: int):
+        Manager.check_none(owner_id=owner_id)
         candidates = Manager.get_blacklist_candidates(owner_id)
         return candidates
 
     @staticmethod
     def get_blacklisted(owner_id: int):
+        Manager.check_none(owner_id=owner_id)
         blacklisted = Manager.get_blacklisted(owner_id)
         return blacklisted
 
     @staticmethod
     def report(user: User):
+        Manager.check_none(user=user)
         setattr(user, "reports", user.reports + 1)
         # if the user has 3 or more reports ban the account deactivating it
         if user.reports >= 3:
@@ -71,11 +76,13 @@ class UserManager(Manager):
 
     @staticmethod
     def set_content_filter(user: User, value: bool):
+        Manager.check_none(user=user, value=value)
         setattr(user, "content_filter", value)
         Manager.commit()
 
     @staticmethod
     def unregister(user: User):
+        Manager.check_none(user=user)
         setattr(user, "is_active", False)
         Manager.commit()
 
@@ -91,6 +98,7 @@ class UserManager(Manager):
 
     @staticmethod
     def get_recipients(user_id: int):
+        Manager.check_none(user_id=user_id)
         recipients = Manager.get_recipients(user_id)
         return recipients
 

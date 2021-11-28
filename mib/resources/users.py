@@ -192,9 +192,7 @@ def set_content_filter(user_id):  # noqa: E501
 
 
 def unregister(user_id):  # noqa: E501
-    """Unregister a user
-
-    Unregister a user by its id (set is_active to false) # noqa: E501
+    """Unregister a user by its id (set is_active to false) # noqa: E501
 
     :param user_id:
     :type user_id: int

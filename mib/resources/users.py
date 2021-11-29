@@ -9,7 +9,7 @@ def error404user():
     return jsonify(response), 404
 
 
-def jsonify_response(status_code, message):
+def jsonify_error_response(status_code, message):
     response = {"message": message}
     return jsonify(response), status_code
 
@@ -28,7 +28,7 @@ def add_points(user_id):  # noqa: E501
         return error404user()
 
     UserManager.add_points(user, int(body.get("points")))
-    return jsonify_response(200, "Points changed")
+    return 200
 
 
 def change_data_user(user_id):  # noqa: E501
@@ -44,7 +44,7 @@ def change_data_user(user_id):  # noqa: E501
     # check if inputs are valid
     check_mail_db = UserManager.retrieve_by_email(body.get("textemail"))
     if check_mail_db is not None and check_mail_db.id != user_id:
-        return jsonify_response(409, "The email already exists in the database")
+        return jsonify_error_response(409, "The email already exists in the database")
 
     # update the user data
     user = UserManager.retrieve_by_id(user_id)
@@ -58,7 +58,7 @@ def change_data_user(user_id):  # noqa: E501
     user.set_dateofbirth(date_as_datetime)
     UserManager.commit()
 
-    return jsonify_response(200, "User data modified")
+    return 200
 
 
 def change_pass_user(user_id):  # noqa: E501
@@ -82,15 +82,15 @@ def change_pass_user(user_id):  # noqa: E501
         if new_pass == confirmpass:
             user.set_password(new_pass)
         else:
-            return jsonify_response(
+            return jsonify_error_response(
                 422, "New password and confirmation password does not match"
             )
     else:
-        return jsonify_response(401, "Wrong current password")
+        return jsonify_error_response(401, "Wrong current password")
 
     UserManager.commit()
 
-    return jsonify_response(200, "User password modified")
+    return 200
 
 
 def create_user():  # noqa: E501
@@ -104,7 +104,7 @@ def create_user():  # noqa: E501
 
     searched_user = UserManager.retrieve_by_email(email)
     if searched_user is not None:
-        return jsonify_response(200, "Already present")
+        return 200
 
     user = User()
     dateofbirth = datetime.datetime.strptime(body.get("dateofbirth"), "%Y-%m-%d")
@@ -121,7 +121,7 @@ def create_user():  # noqa: E501
     #     "message": "Successfully registered",
     # }
     # return jsonify(response), 201
-    return jsonify_response(201, "Created")
+    return 201
 
 
 def modify_black_list(user_id):  # noqa: E501
@@ -149,7 +149,7 @@ def modify_black_list(user_id):  # noqa: E501
     candidates = UserManager.get_blacklist_candidates(user_id)
     blacklisted = UserManager.get_blacklisted(user_id)
 
-    return jsonify_response(200, {"candidates": candidates, "blacklisted": blacklisted})
+    return jsonify({"candidates": candidates, "blacklisted": blacklisted}), 200
 
 
 def report():  # noqa: E501
@@ -168,7 +168,7 @@ def report():  # noqa: E501
 
     UserManager.report(user)
 
-    return jsonify_response(200, "User reported")
+    return 200
 
 
 def set_content_filter(user_id):  # noqa: E501
@@ -188,7 +188,7 @@ def set_content_filter(user_id):  # noqa: E501
     value = int(value) == 1
     UserManager.set_content_filter(user, value)
 
-    return jsonify_response(200, "Content filter set")
+    return 200
 
 
 def unregister(user_id):  # noqa: E501
@@ -204,11 +204,11 @@ def unregister(user_id):  # noqa: E501
     #     'status': 'success',
     #     'message': 'Successfully deleted',
     # }
-
+    # 
     # return jsonify(response_object), 202
     user = UserManager.retrieve_by_id(user_id)
     if user is None:
         return error404user()
 
     UserManager.unregister(user)
-    return jsonify_response(200, "User unregistered")
+    return 200

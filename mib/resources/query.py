@@ -1,5 +1,6 @@
+from flask import jsonify
 from mib.dao.user_manager import UserManager
-from mib.resources.users import jsonify_response, error404user
+from mib.resources.users import jsonify_error_response, error404user
 
 
 def get_all_users():  # noqa: E501
@@ -8,7 +9,7 @@ def get_all_users():  # noqa: E501
     :rtype: List[User]
     """
     all_users = UserManager.get_all_users()
-    return jsonify_response(200, all_users)
+    return jsonify(all_users), 200
 
 
 def get_banned_users():  # noqa: E501
@@ -17,7 +18,7 @@ def get_banned_users():  # noqa: E501
     :rtype: List[User]
     """
     banned_users = UserManager.get_banned_users()
-    return jsonify_response(200, banned_users)
+    return jsonify(banned_users), 200
 
 
 def get_black_list(user_id):  # noqa: E501
@@ -29,7 +30,7 @@ def get_black_list(user_id):  # noqa: E501
     :rtype: InlineResponse2001
     """
     blacklist = UserManager.get_blacklisted(user_id)
-    return jsonify_response(200, blacklist)
+    return jsonify(blacklist), 200
 
 
 def get_recipients(user_id):  # noqa: E501
@@ -45,7 +46,7 @@ def get_recipients(user_id):  # noqa: E501
         return error404user()
 
     recipients = UserManager.get_recipients(user_id)
-    return jsonify_response(200, recipients)
+    return jsonify(recipients), 200
 
 
 def get_unregistered_users():  # noqa: E501
@@ -54,7 +55,7 @@ def get_unregistered_users():  # noqa: E501
     :rtype: List[User]
     """
     unregistered_users = UserManager.get_unregistered_users()
-    return jsonify_response(200, unregistered_users)
+    return jsonify(unregistered_users), 200
 
 
 def get_user(user_id):  # noqa: E501
@@ -69,7 +70,7 @@ def get_user(user_id):  # noqa: E501
     if user is None:
         return error404user()
 
-    return jsonify_response(200, user)
+    return jsonify_error_response(200, user)
 
 
 def get_user_by_email(user_email):  # noqa: E501
@@ -84,7 +85,7 @@ def get_user_by_email(user_email):  # noqa: E501
     if user is None:
         return error404user()
 
-    return jsonify_response(200, user)
+    return jsonify(user_dict(user)), 200
 
 
 def get_user_public(user_id):  # noqa: E501
@@ -99,13 +100,7 @@ def get_user_public(user_id):  # noqa: E501
     if user is None:
         return error404user()
 
-    public_user = {
-        "firstname": user.firstname,
-        "lastname": user.lastname,
-        "email": user.email,
-    }
-
-    return jsonify_response(200, public_user)
+    return jsonify(user_public_dict(user)), 200
 
 
 def get_user_email(user_id):  # noqa: E501
@@ -120,7 +115,7 @@ def get_user_email(user_id):  # noqa: E501
     if user is None:
         return error404user()
 
-    return jsonify_response(200, user.email)
+    return jsonify(email=user.email), 200
 
 
 def get_all_users_public():  # noqa: E501
@@ -129,4 +124,28 @@ def get_all_users_public():  # noqa: E501
     :rtype: List[UserPublic]
     """
     public_users = UserManager.get_all_users_public()
-    return jsonify_response(200, public_users)
+    return jsonify(public_users), 200
+
+
+def user_public_dict(user):
+    d = {
+        "firstname": user.firstname,
+        "lastname": user.lastname,
+        "email": user.email,
+    }
+    return d
+
+
+def user_dict(user):
+    d = {
+        "firstname": user.firstname,
+        "lastname": user.lastname,
+        "email": user.email,
+        "dateofbirth": user.dateofbirth,
+        "password": user.password,
+        "reports": user.reports,
+        "is_active": user.is_active,
+        "points": user.points,
+        "content_filter": user.content_filter,
+    }
+    return d

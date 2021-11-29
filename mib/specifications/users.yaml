@@ -163,8 +163,26 @@ paths:
           description: User data modified
         404:
           description: User_id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "User_id not found"
+                    example: "User_id not found"
         409:
           description: The email already exists in the database
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "The email already exists in the database"
+                    example: "The email already exists in the database"
         default: 
           description: An error occurred
 
@@ -207,10 +225,37 @@ paths:
           description: User password modified
         404:
           description: User_id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "User_id not found"
+                    example: "User_id not found"
         401:
           description: Wrong current password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Wrong current password"
+                    example: "Wrong current password"
         422:
           description: New password and confirmation password does not match
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "New password and confirmation password does not match"
+                    example: "New password and confirmation password does not match"
         default: 
           description: An error occurred
           
@@ -237,6 +282,15 @@ paths:
           description: User reported
         404:
           description: Reported email not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Reported email not found"
+                    example: "Reported email not found"
         default: 
           description: An error occurred
 
@@ -271,6 +325,15 @@ paths:
           description: Content filter set
         404:
           description: User_id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "User_id not found"
+                    example: "User_id not found"
         default: 
           description: An error occurred
 
@@ -305,6 +368,15 @@ paths:
           description: Points changed
         404:
           description: User_id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "User_id not found"
+                    example: "User_id not found"
         default: 
           description: An error occurred
 
@@ -313,7 +385,7 @@ paths:
       tags: [ Query ]
       summary: Get the blacklist for a user
       description: Get the blacklist for a user
-      operationId: mib.resources.users.get_black_list
+      operationId: mib.resources.query.get_black_list
       parameters:
         - name: user_id
           description: User Unique ID
@@ -355,7 +427,17 @@ paths:
                           format: email
                           example: mario.rossi@example.org
         404:
-          description: User not found
+          description: User_id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "User_id not found"
+                    example: "User_id not found"
+
         default:
           description: An error occurred
     put:
@@ -425,7 +507,16 @@ paths:
                           format: email
                           example: mario.rossi@example.org
         404:
-          description: User not found
+          description: User_id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "User_id not found"
+                    example: "User_id not found"
         default:
           description: An error occurred
 
@@ -451,7 +542,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
         404:
-          description: User not found
+          description: User_id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "User_id not found"
+                    example: "User_id not found"
         default:
           description: An error occured while retrieving the user
     delete:
@@ -471,6 +571,15 @@ paths:
           description: User unregistered
         404:
           description: User_id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "User_id not found"
+                    example: "User_id not found"
         default:
           description: An error occurred while retrieving the user
 
@@ -496,7 +605,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/User_Public"
         404:
-          description: User not found
+          description: User_id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "User_id not found"
+                    example: "User_id not found"
         default:
           description: An error occured while retrieving the user
 
@@ -527,7 +645,16 @@ paths:
                     format: email
                     example: mario.rossi@example.org
         404:
-          description: User not found
+          description: User_email not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "User_email not found"
+                    example: "User_email not found"
         default:
           description: An error occured while retrieving the user
   
@@ -562,6 +689,15 @@ paths:
                       example: mario.rossi@example.org
         404:
           description: User_id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "User_id not found"
+                    example: "User_id not found"
         default:
           description: An error occurred
 
@@ -586,7 +722,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
         404:
-          description: User not found
+          description: User_id not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "User_id not found"
+                    example: "User_id not found"
         default:
           description: An error occured while retrieving the user
 

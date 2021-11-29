@@ -138,6 +138,7 @@ def user_public_dict(user):
 
 def user_dict(user):
     d = {
+        "id": user.id,
         "firstname": user.firstname,
         "lastname": user.lastname,
         "email": user.email,

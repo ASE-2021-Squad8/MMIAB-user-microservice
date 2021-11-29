@@ -814,6 +814,7 @@ components:
   schemas:
     User:
       required:
+        - id
         - firstname
         - lastname
         - email
@@ -825,6 +826,10 @@ components:
         - content_filter
       type: object
       properties:
+        id:
+          type: integer
+          description: id of the user in the database
+          example: 1
         firstname:
           type: string
           description: First name of user

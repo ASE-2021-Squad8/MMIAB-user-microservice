@@ -57,12 +57,14 @@ class UserManager(Manager):
     def get_blacklist_candidates(owner_id: int):
         Manager.check_none(owner_id=owner_id)
         candidates = Manager.get_blacklist_candidates(owner_id)
+        candidates = [user_dict(u) for u in candidates]
         return candidates
 
     @staticmethod
     def get_blacklisted(owner_id: int):
         Manager.check_none(owner_id=owner_id)
         blacklisted = Manager.get_blacklisted(owner_id)
+        blacklisted = [user_dict(u) for u in blacklisted]
         return blacklisted
 
     @staticmethod
@@ -89,25 +91,53 @@ class UserManager(Manager):
     @staticmethod
     def get_all_users():
         all_users = Manager.get_all_users()
+        all_users = [user_dict(u) for u in all_users]
         return all_users
 
     @staticmethod
     def get_banned_users():
         banned = Manager.get_banned_users()
+        banned = [user_dict(u) for u in banned]
         return banned
 
     @staticmethod
     def get_recipients(user_id: int):
         Manager.check_none(user_id=user_id)
         recipients = Manager.get_recipients(user_id)
+        recipients = [{"id": u.id, "email": u.email} for u in recipients]
         return recipients
 
     @staticmethod
     def get_unregistered_users():
         unregistered_users = Manager.get_unregistered_users()
+        unregistered_users = [user_dict(u) for u in unregistered_users]
         return unregistered_users
 
     @staticmethod
     def get_all_users_public():
         public_users = Manager.get_all_users_public()
+        public_users = [user_public_dict(u) for u in public_users]
         return public_users
+
+
+def user_public_dict(user):
+    d = {
+        "firstname": user.firstname,
+        "lastname": user.lastname,
+        "email": user.email,
+    }
+    return d
+
+def user_dict(user):
+    d = {
+        "firstname": user.firstname,
+        "lastname": user.lastname,
+        "email": user.email,
+        "dateofbirth": user.dateofbirth,
+        "password": user.password,
+        "reports": user.reports,
+        "is_active": user.is_active,
+        "points": user.points,
+        "content_filter": user.content_filter,
+    }
+    return d

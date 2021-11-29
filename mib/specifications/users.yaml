@@ -735,7 +735,7 @@ paths:
         default:
           description: An error occured while retrieving the user
 
-  /user/list/:
+  /user/list:
     get:
       tags: [ Query ]
       summary: Get users list

@@ -15,7 +15,7 @@ def authenticate(auth):
     }
     response_code = 401
 
-    if user and user.authenticate(auth['password']):
+    if user and user.is_active and user.authenticate(auth['password']):
         response['authentication'] = 'success'
         response['user'] = user.serialize()
         response_code = 200

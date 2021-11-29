@@ -28,7 +28,7 @@ def add_points(user_id):  # noqa: E501
         return error404user()
 
     UserManager.add_points(user, int(body.get("points")))
-    return 200
+    return 200, 200
 
 
 def change_data_user(user_id):  # noqa: E501
@@ -58,7 +58,7 @@ def change_data_user(user_id):  # noqa: E501
     user.set_dateofbirth(date_as_datetime)
     UserManager.commit()
 
-    return 200
+    return 200, 200
 
 
 def change_pass_user(user_id):  # noqa: E501
@@ -90,7 +90,7 @@ def change_pass_user(user_id):  # noqa: E501
 
     UserManager.commit()
 
-    return 200
+    return 200, 200
 
 
 def create_user():  # noqa: E501
@@ -104,7 +104,7 @@ def create_user():  # noqa: E501
 
     searched_user = UserManager.retrieve_by_email(email)
     if searched_user is not None:
-        return 200
+        return 200, 200
 
     user = User()
     dateofbirth = datetime.datetime.strptime(body.get("dateofbirth"), "%Y-%m-%d")
@@ -121,7 +121,7 @@ def create_user():  # noqa: E501
     #     "message": "Successfully registered",
     # }
     # return jsonify(response), 201
-    return 201
+    return 201, 201
 
 
 def modify_black_list(user_id):  # noqa: E501
@@ -164,11 +164,11 @@ def report():  # noqa: E501
     mail = body.get("useremail")
     user = UserManager.retrieve_by_email(mail)
     if user is None:
-        return error404user()
+        return jsonify_error_response(404, "User_email not found")
 
     UserManager.report(user)
 
-    return 200
+    return 200, 200
 
 
 def set_content_filter(user_id):  # noqa: E501
@@ -188,7 +188,7 @@ def set_content_filter(user_id):  # noqa: E501
     value = int(value) == 1
     UserManager.set_content_filter(user, value)
 
-    return 200
+    return 200, 200
 
 
 def unregister(user_id):  # noqa: E501
@@ -211,4 +211,4 @@ def unregister(user_id):  # noqa: E501
         return error404user()
 
     UserManager.unregister(user)
-    return 200
+    return 200, 200

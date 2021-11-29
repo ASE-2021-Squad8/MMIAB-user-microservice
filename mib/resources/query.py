@@ -70,7 +70,7 @@ def get_user(user_id):  # noqa: E501
     if user is None:
         return error404user()
 
-    return jsonify_error_response(200, user)
+    return jsonify(user_dict(user)), 200
 
 
 def get_user_by_email(user_email):  # noqa: E501
@@ -83,7 +83,7 @@ def get_user_by_email(user_email):  # noqa: E501
     """
     user = UserManager.retrieve_by_email(user_email)
     if user is None:
-        return error404user()
+        return jsonify_error_response(404, "User_email not found")
 
     return jsonify(user_dict(user)), 200
 

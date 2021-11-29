@@ -63,7 +63,7 @@ class Manager(object):
             db.session.query(User.id, User.email)
             .filter(User.id != owner_id, User.reports < 3, User.is_active)
             .filter(
-                User.id.not_in(
+                User.id.notin_(
                     db.session.query(BlackList.member).filter(
                         BlackList.owner == owner_id
                     )
@@ -87,7 +87,7 @@ class Manager(object):
 
     @staticmethod
     def get_all_users():
-        result = db.session.query(User).filter(User.is_active).all()
+        result = db.session.query(User).filter(User.is_active == True).all()
         return result
 
     @staticmethod
@@ -105,7 +105,7 @@ class Manager(object):
             db.session.query(User.id, User.email)
             .filter(User.id != user_id, User.is_active)
             .filter(
-                User.id.not_in(
+                User.id.notin_(
                     db.session.query(BlackList.member).filter(
                         BlackList.owner == user_id
                     )

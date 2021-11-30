@@ -44,9 +44,6 @@ class User(db.Model):
     def set_lastname(self, name):
         self.lastname = name
 
-    def is_authenticated(self):
-        return self.authenticated
-
     def set_dateofbirth(self, dateofbirth):
         self.dateofbirth = dateofbirth
 

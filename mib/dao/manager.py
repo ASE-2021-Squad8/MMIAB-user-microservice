@@ -7,7 +7,7 @@ class Manager(object):
     db_session = db.session
 
     @staticmethod
-    def check_none(**kwargs):
+    def check_none(**kwargs): # pragma: no cover
         for name, arg in zip(kwargs.keys(), kwargs.values()):
             if arg is None:
                 raise ValueError("You can't set %s argument to None" % name)
@@ -21,28 +21,7 @@ class Manager(object):
         db.session.commit()
 
     @staticmethod
-    def retrieve():
-        """
-        It should implemented by child
-        :return:
-        """
-        pass
-
-    @staticmethod
     def commit():
-        db.session.commit()
-
-    @staticmethod
-    def update(**kwargs):
-        Manager.check_none(**kwargs)
-        db.session.commit()
-
-    @staticmethod
-    def delete(**kwargs):
-        Manager.check_none(**kwargs)
-
-        for bean in kwargs.values():
-            db.session.delete(bean)
         db.session.commit()
 
     @staticmethod
@@ -71,7 +50,7 @@ class Manager(object):
             )
             .all()
         )
-        result = [(usr.id, usr.email) for usr in result]
+        result = [dict(id=usr.id, email=usr.email) for usr in result]
         return result
 
     @staticmethod
@@ -82,7 +61,7 @@ class Manager(object):
             .filter(BlackList.member == User.id)
             .all()
         )
-        result = [(usr.id, usr.email) for usr in result]
+        result = [dict(id=usr.member, email=usr.email) for usr in result]
         return result
 
     @staticmethod

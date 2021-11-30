@@ -13,7 +13,7 @@ def authenticate(auth):
         'authentication': 'failure',
         'user': None
     }
-    response_code = 401
+    response_code = 400
 
     if user and user.is_active and user.authenticate(auth['password']):
         response['authentication'] = 'success'

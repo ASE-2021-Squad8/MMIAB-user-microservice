@@ -27,10 +27,16 @@ def get_black_list(user_id):  # noqa: E501
     :param user_id: User Unique ID
     :type user_id: int
 
-    :rtype: InlineResponse2001
+    :rtype: List[id, email] candidates and blacklisted
     """
-    blacklist = UserManager.get_blacklisted(user_id)
-    return jsonify(blacklist), 200
+    user = UserManager.retrieve_by_id(user_id)
+    if user is None:
+        return error404user()
+
+    candidates = UserManager.get_blacklist_candidates(user_id)
+    blacklisted = UserManager.get_blacklisted(user_id)
+
+    return jsonify({"candidates": candidates, "blacklisted": blacklisted}), 200
 
 
 def get_recipients(user_id):  # noqa: E501
@@ -39,7 +45,7 @@ def get_recipients(user_id):  # noqa: E501
     :param user_id:
     :type user_id: int
 
-    :rtype: List[InlineResponse2003]
+    :rtype: List[id, email]
     """
     user = UserManager.retrieve_by_id(user_id)
     if user is None:
@@ -109,7 +115,7 @@ def get_user_email(user_id):  # noqa: E501
     :param user_id: User Unique ID
     :type user_id: int
 
-    :rtype: InlineResponse2002
+    :rtype: string
     """
     user = UserManager.retrieve_by_id(user_id)
     if user is None:

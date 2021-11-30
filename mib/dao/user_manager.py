@@ -22,19 +22,6 @@ class UserManager(Manager):
         return User.query.filter(User.email == email).first()
 
     @staticmethod
-    def update_user(user: User):
-        Manager.update(user=user)
-
-    @staticmethod
-    def delete_user(user: User):
-        Manager.delete(user=user)
-
-    @staticmethod
-    def delete_user_by_id(id_: int):
-        user = UserManager.retrieve_by_id(id_)
-        UserManager.delete_user(user)
-
-    @staticmethod
     def add_points(user: User, points_: int):
         Manager.check_none(user=user, points_=points_)
         setattr(user, "points", user.points + points_)
@@ -43,28 +30,28 @@ class UserManager(Manager):
     @staticmethod
     def add_to_blacklist(owner_id: int, members_list):
         Manager.check_none(owner_id=owner_id, members_list=members_list)
-        for member_id in members_list:
-            entry = BlackList(owner=owner_id, member=member_id)
-            Manager.add_to_blacklist(entry)
+        for member in members_list:
+            if UserManager.retrieve_by_id(member["id"]) is not None:
+                entry = BlackList(owner=owner_id, member=member["id"])
+                Manager.add_to_blacklist(entry)
 
     @staticmethod
     def delete_from_blacklist(owner_id: int, members_list):
         Manager.check_none(owner_id=owner_id, members_list=members_list)
-        for member_id in members_list:
-            Manager.delete_member_from_blacklist(owner_id, member_id)
+        for member in members_list:
+            if UserManager.retrieve_by_id(member["id"]) is not None:
+                Manager.delete_member_from_blacklist(owner_id, member["id"])
 
     @staticmethod
     def get_blacklist_candidates(owner_id: int):
         Manager.check_none(owner_id=owner_id)
         candidates = Manager.get_blacklist_candidates(owner_id)
-        candidates = [user_dict(u) for u in candidates]
         return candidates
 
     @staticmethod
     def get_blacklisted(owner_id: int):
         Manager.check_none(owner_id=owner_id)
         blacklisted = Manager.get_blacklisted(owner_id)
-        blacklisted = [user_dict(u) for u in blacklisted]
         return blacklisted
 
     @staticmethod
@@ -127,6 +114,7 @@ def user_public_dict(user):
         "email": user.email,
     }
     return d
+
 
 def user_dict(user):
     d = {

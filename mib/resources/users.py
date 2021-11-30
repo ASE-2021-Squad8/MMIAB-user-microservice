@@ -115,12 +115,6 @@ def create_user():  # noqa: E501
     user.set_dateofbirth(dateofbirth)
     UserManager.create_user(user)
 
-    # response = {
-    #     "user": user.serialize(),
-    #     "status": "success",
-    #     "message": "Successfully registered",
-    # }
-    # return jsonify(response), 201
     return 201, 201
 
 
@@ -130,7 +124,7 @@ def modify_black_list(user_id):  # noqa: E501
     :param user_id: User Unique ID
     :type user_id: int
 
-    :rtype: InlineResponse2001
+    :rtype: List[id, email] candidates and blacklisted
     """
     body = request.get_json()
     user = UserManager.retrieve_by_id(user_id)
@@ -139,12 +133,12 @@ def modify_black_list(user_id):  # noqa: E501
 
     # remove or add users to the blacklist
     op = body.get("op")
-    members_id = body.get("users")
+    members_list = body.get("users")
 
     if op == "delete":
-        UserManager.delete_from_blacklist(user_id, members_id)
+        UserManager.delete_from_blacklist(user_id, members_list)
     elif op == "add":
-        UserManager.add_to_blacklist(user_id, members_id)
+        UserManager.add_to_blacklist(user_id, members_list)
 
     candidates = UserManager.get_blacklist_candidates(user_id)
     blacklisted = UserManager.get_blacklisted(user_id)
@@ -199,16 +193,10 @@ def unregister(user_id):  # noqa: E501
 
     :rtype: None
     """
-    # UserManager.delete_user_by_id(user_id)
-    # response_object = {
-    #     'status': 'success',
-    #     'message': 'Successfully deleted',
-    # }
-    # 
-    # return jsonify(response_object), 202
     user = UserManager.retrieve_by_id(user_id)
     if user is None:
         return error404user()
 
     UserManager.unregister(user)
+
     return 200, 200

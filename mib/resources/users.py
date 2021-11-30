@@ -1,164 +1,202 @@
+import datetime
 from flask import request, jsonify
+from mib.dao.user_manager import UserManager
+from mib.models.user import User
 
-def add_points(body, user_id):  # noqa: E501
-    """Change number of points for user
 
-    Change number of points for user # noqa: E501
+def error404user():
+    response = {"message": "User_id not found"}
+    return jsonify(response), 404
 
-    :param body: 
-    :type body: dict | bytes
+
+def jsonify_error_response(status_code, message):
+    response = {"message": message}
+    return jsonify(response), status_code
+
+
+def add_points(user_id):  # noqa: E501
+    """Change number of points for user # noqa: E501
+
     :param user_id: User Unique ID
     :type user_id: int
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        body = PointsUserIdBody.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    body = request.get_json()
+    user = UserManager.retrieve_by_id(user_id)
+    if user is None:
+        return error404user()
+
+    UserManager.add_points(user, int(body.get("points")))
+    return 200, 200
 
 
-def change_data_user(body, user_id):  # noqa: E501
-    """Modify user data
+def change_data_user(user_id):  # noqa: E501
+    """Change the account data of a user # noqa: E501
 
-    Change the account data of a user # noqa: E501
-
-    :param body: 
-    :type body: dict | bytes
     :param user_id: User Unique ID
     :type user_id: int
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        body = DataUserIdBody.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    body = request.get_json()
+
+    # check if inputs are valid
+    check_mail_db = UserManager.retrieve_by_email(body.get("textemail"))
+    if check_mail_db is not None and check_mail_db.id != user_id:
+        return jsonify_error_response(409, "The email already exists in the database")
+
+    # update the user data
+    user = UserManager.retrieve_by_id(user_id)
+    if user is None:
+        return error404user()
+
+    user.set_firstname(body.get("textfirstname"))
+    user.set_lastname(body.get("textlastname"))
+    user.set_email(body.get("textemail"))
+    date_as_datetime = datetime.datetime.strptime(body.get("textbirth"), "%Y-%m-%d")
+    user.set_dateofbirth(date_as_datetime)
+    UserManager.commit()
+
+    return 200, 200
 
 
-def change_pass_user(body, user_id):  # noqa: E501
-    """Change user password
+def change_pass_user(user_id):  # noqa: E501
+    """Change user password # noqa: E501
 
-    Change the password of a user # noqa: E501
-
-    :param body: 
-    :type body: dict | bytes
     :param user_id: User Unique ID
     :type user_id: int
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        body = PasswordUserIdBody.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    body = request.get_json()
+    user = UserManager.retrieve_by_id(user_id)
+    if user is None:
+        return error404user()
+
+    current_password = body.get("currentpassword")
+    new_pass = body.get("newpassword")
+    confirmpass = body.get("confirmpassword")
+    # check that current and confirmation password are correct
+    if user.authenticate(current_password):
+        if new_pass == confirmpass:
+            user.set_password(new_pass)
+        else:
+            return jsonify_error_response(
+                422, "New password and confirmation password does not match"
+            )
+    else:
+        return jsonify_error_response(401, "Wrong current password")
+
+    UserManager.commit()
+
+    return 200, 200
 
 
-def create_user(body):  # noqa: E501
-    """Add a new user
+def create_user():  # noqa: E501
+    """Add a new user # noqa: E501
 
-     # noqa: E501
-
-    :param body: Create a new user inside microservice app
-    :type body: dict | bytes
-
-    :rtype: None
+    :rtype: json
     """
-    # if connexion.request.is_json:
-    #     body = UserBody.from_dict(connexion.request.get_json())  # noqa: E501
+    body = request.get_json()
+    email = body.get("email")
+    password = body.get("password")
 
-    # post_data = request.get_json()
-    # email = post_data.get('email')
-    # password = post_data.get('password')
+    searched_user = UserManager.retrieve_by_email(email)
+    if searched_user is not None:
+        return 200, 200
 
-    # searched_user = UserManager.retrieve_by_email(email)
-    # if searched_user is not None:
-    #     return jsonify({
-    #         'status': 'Already present'
-    #     }), 200
+    user = User()
+    dateofbirth = datetime.datetime.strptime(body.get("dateofbirth"), "%Y-%m-%d")
+    user.set_email(email)
+    user.set_password(password)
+    user.set_firstname(body.get("firstname"))
+    user.set_lastname(body.get("lastname"))
+    user.set_dateofbirth(dateofbirth)
+    UserManager.create_user(user)
 
-    # user = User()
-    # birthday = datetime.datetime.strptime(post_data.get('birthdate'),
-    #                                       '%Y-%m-%d')
-    # user.set_email(email)
-    # user.set_password(password)
-    # user.set_first_name(post_data.get('firstname'))
-    # user.set_last_name(post_data.get('lastname'))
-    # user.set_birthday(birthday)
-    # user.set_phone(post_data.get('phone'))
-    # UserManager.create_user(user)
-
-    # response_object = {
-    #     'user': user.serialize(),
-    #     'status': 'success',
-    #     'message': 'Successfully registered',
-    # }
-
-    # return jsonify(response_object), 201
-    return 'do some magic!'
+    return 201, 201
 
 
-def modify_black_list(body, user_id):  # noqa: E501
-    """Put/delete users in/from blacklist
+def modify_black_list(user_id):  # noqa: E501
+    """Put/delete users in/from blacklist of user_id # noqa: E501
 
-    Put/delete users in/from the blacklist of user_id # noqa: E501
-
-    :param body: 
-    :type body: dict | bytes
     :param user_id: User Unique ID
     :type user_id: int
 
-    :rtype: InlineResponse2001
+    :rtype: List[id, email] candidates and blacklisted
     """
-    if connexion.request.is_json:
-        body = BlackListUserIdBody.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    body = request.get_json()
+    user = UserManager.retrieve_by_id(user_id)
+    if user is None:
+        return error404user()
+
+    # remove or add users to the blacklist
+    op = body.get("op")
+    members_list = body.get("users")
+
+    if op == "delete":
+        UserManager.delete_from_blacklist(user_id, members_list)
+    elif op == "add":
+        UserManager.add_to_blacklist(user_id, members_list)
+
+    candidates = UserManager.get_blacklist_candidates(user_id)
+    blacklisted = UserManager.get_blacklisted(user_id)
+
+    return jsonify({"candidates": candidates, "blacklisted": blacklisted}), 200
 
 
-def report(body):  # noqa: E501
+def report():  # noqa: E501
     """Report a user
 
     Report a user by its email # noqa: E501
 
-    :param body: 
-    :type body: dict | bytes
-
     :rtype: None
     """
-    if connexion.request.is_json:
-        body = UserReportBody.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    # get the mail of the user to be reported and report it
+    body = request.get_json()
+    mail = body.get("useremail")
+    user = UserManager.retrieve_by_email(mail)
+    if user is None:
+        return jsonify_error_response(404, "User_email not found")
+
+    UserManager.report(user)
+
+    return 200, 200
 
 
-def set_content_filter(body, user_id):  # noqa: E501
-    """Set content filter for user
+def set_content_filter(user_id):  # noqa: E501
+    """Set content filter for user # noqa: E501
 
-    Change the content filter of a user # noqa: E501
-
-    :param body: 
-    :type body: dict | bytes
     :param user_id: User Unique ID
     :type user_id: int
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        body = ContentFilterUserIdBody.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    body = request.get_json()
+    user = UserManager.retrieve_by_id(user_id)
+    if user is None:
+        return error404user()
+
+    value = body.get("filter")
+    value = int(value) == 1
+    UserManager.set_content_filter(user, value)
+
+    return 200, 200
 
 
 def unregister(user_id):  # noqa: E501
-    """Unregister a user
+    """Unregister a user by its id (set is_active to false) # noqa: E501
 
-    Unregister a user by its id (set is_active to false) # noqa: E501
-
-    :param user_id: 
+    :param user_id:
     :type user_id: int
 
     :rtype: None
     """
-    # UserManager.delete_user_by_id(user_id)
-    # response_object = {
-    #     'status': 'success',
-    #     'message': 'Successfully deleted',
-    # }
+    user = UserManager.retrieve_by_id(user_id)
+    if user is None:
+        return error404user()
 
-    # return jsonify(response_object), 202
-    return 'do some magic!'
+    UserManager.unregister(user)
+
+    return 200, 200

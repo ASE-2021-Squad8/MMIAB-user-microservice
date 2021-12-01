@@ -105,7 +105,7 @@ class Manager(object):
     @staticmethod
     def get_all_users_public():
         result = (
-            db.session.query(User.email, User.firstname, User.lastname)
+            db.session.query(User.id, User.email, User.firstname, User.lastname)
             .filter(User.is_active)
             .all()
         )

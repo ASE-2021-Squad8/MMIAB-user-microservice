@@ -109,6 +109,7 @@ class UserManager(Manager):
 
 def user_public_dict(user):
     d = {
+        "id": user.id,
         "firstname": user.firstname,
         "lastname": user.lastname,
         "email": user.email,

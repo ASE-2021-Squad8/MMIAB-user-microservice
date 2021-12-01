@@ -135,6 +135,7 @@ def get_all_users_public():  # noqa: E501
 
 def user_public_dict(user):
     d = {
+        "id": user.id,
         "firstname": user.firstname,
         "lastname": user.lastname,
         "email": user.email,

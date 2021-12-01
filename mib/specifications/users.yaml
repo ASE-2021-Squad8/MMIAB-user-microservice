@@ -872,11 +872,16 @@ components:
           example: false
     User_Public:
       required:
+        - id
         - firstname
         - lastname
         - email
       type: object
       properties:
+        id:
+          type: integer
+          description: id of the user
+          example: 1
         firstname:
           type: string
           description: First name of user

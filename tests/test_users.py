@@ -52,6 +52,7 @@ class TestUsers(unittest.TestCase):
         reply = self.client.get("/api/user/1/public")
         assert reply.status_code == 200
         user = reply.get_json()
+        assert user["id"] == 1
         assert user["email"] == "mario.rossi@example.org"
 
     def test_04_get_email_of_user(self):
@@ -77,7 +78,7 @@ class TestUsers(unittest.TestCase):
         assert user["email"] == "mario.rossi@example.org"
 
     def test_06_get_users_list(self):
-        # Get user public list
+        # Get users list
         reply = self.client.get("/api/user/list")
         assert reply.status_code == 200
         users = reply.get_json()
@@ -91,6 +92,7 @@ class TestUsers(unittest.TestCase):
         assert reply.status_code == 200
         users = reply.get_json()
         assert len(users) == 1
+        assert users[0]["id"] == 1
         assert users[0]["email"] == "mario.rossi@example.org"
 
     def test_08_get_blacklist(self):

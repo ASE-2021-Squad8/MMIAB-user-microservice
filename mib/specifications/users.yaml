@@ -318,7 +318,7 @@ paths:
                 - filter
               properties:
                 filter:
-                  type: integer
+                  type: string
                   example: 0
       responses:
         200:

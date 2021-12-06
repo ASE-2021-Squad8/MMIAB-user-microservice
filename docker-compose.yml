@@ -12,7 +12,7 @@ services:
       - pgdata:/var/lib/postgresql/data
     ports:
       # this is only for development purpose
-      - "5342:5342"
+      - "5343:5343"
     env_file:
       - env_file
 
